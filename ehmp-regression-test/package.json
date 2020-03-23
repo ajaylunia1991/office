@@ -1,0 +1,24 @@
+{
+  "name": "EHMP-RGT-TEST",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {},
+  "author": "Cherrie Gong",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "allure-commandline": "^2.13.0",
+    "assert": "^1.4.1",
+    "bifrost-io": "^0.6.19",
+    "codeceptjs": "^2.0.4",
+    "config": "^1.29.4",
+    "dateformat": "^3.0.3",
+    "mocha": "^3.1.2",
+    "mochawesome": "3.0",
+    "moment": "^2.0.0",
+    "moment-timezone": "^0.5.25",
+    "webdriverio": "4.6.2"
+  }
+}

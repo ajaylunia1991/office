@@ -1,0 +1,213 @@
+#!groovy
+
+@Library('share-lib') _
+
+pipeline {
+    agent {
+        label 'build-deploy'
+    }
+
+    stages {
+        stage('Init') {
+            steps {
+                sh "rm -rf target"
+            }
+        }
+
+        stage('e2e-Regression') {
+            agent {
+                docker {
+                    image 'docker-repo.ehealthinsurance.com/build-image/nodejs_java:v10.15.0_5'
+                    args '-u wlsuser'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                script{
+                    sh "rm -rf __out && rm -rf output && npm install"
+                    sh "rm -rf allure-results && mkdir allure-results"
+                    sh "bash reportEnv.sh ${env.env} ${env.component}"
+                    if (fileExists('allure-report/history/history.json')) {
+                      sh "cp -r allure-report/history allure-results && rm -rf allure-report"
+                    }
+                    sh "npm install arrify"
+                    def testSuites = readJSON text: '''[{
+                            "name":"./test/ehmp/Sanity/\\*.js"
+                        }]'''
+
+                    if("${env.env}" == "gpa"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/ehmp/Sanity/ospatch.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "tracking"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/Tracking/\\*/\\*.js"
+                        }]'''
+                    }
+                  
+                   if("${env.component}" == "GMG"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/GMG/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "minisite"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/Minisite/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "mdc_tracking"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/Tracking/MDCTracking/\\*.js"
+                        }]'''
+                    }
+
+
+                    if("${env.component}" == "partner"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/Partner/ehiLogo/\\*.js"
+                        },{
+                            "name":"./test/Partner/ehmVanityUrl/\\*.js"
+                        },{
+                            "name":"./test/Partner/mdcVanityUrl/\\*.js"
+                        },{
+                            "name":"./test/Partner/vbpLogo/\\*.js"
+                        }]'''
+                    }
+                    if("${env.component}" == "partnerMiniSite"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/PartnerMiniSite/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerMiniSiteCVS/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerMiniSiteWalgreens/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerMiniSiteWalmart/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "partnerAllid"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHI/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHMB/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHMC/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHMD/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHM/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllEHMF/\\*.js"
+                        },{
+                            "name":"./test/Partner/PartnerAllianceIdAllMDC/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "Regression_Shopping"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/ehmp/\\*/\\*.js"
+                        },{
+                            "name":"./test/Minisite/\\*.js"
+                        },{
+                            "name":"./test/rewritingRule/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "Regression_EHIM"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/ehim/\\*/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "regression" && ("${env.env}" == "qa" || "${env.env}" == "qp" || "${env.env}" == "cm")){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/enrollment/\\*/\\*.js"
+                        },{
+                            "name":"./test/ehmp/\\*/\\*.js"
+                        },{
+                            "name":"./test/Minisite/\\*.js"
+                        },{
+                            "name":"./test/GMG/\\*.js"
+                        },{
+                            "name":"./test/rewritingRule/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "Regression_Enrollment" && ("${env.env}" == "qa" || "${env.env}" == "qp" || "${env.env}" == "cm")){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/enrollment/\\*/\\*.js"
+                            }]'''
+                    }
+
+                    if("${env.component}" == "Regression_EHM"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/ehm/\\*/\\*.js"
+                        }]'''
+                    }
+                      if("${env.component}" == "Regression_MDC"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/mdc/\\*/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "carriersLandingPages"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/carriersLandingPages/\\*.js"
+                        }]'''
+                    }
+
+                    if("${env.component}" == "prodMonitoring"){
+                        testSuites = readJSON text: '''[{
+                            "name":"./test/prodMonitoring/\\*.js"
+                        }]'''
+                    }
+
+                    echo "${testSuites}"
+
+                    def testMap = [:]
+                    testSuites.each {testSuite ->
+                        testMap[testSuite.name] = {
+                            if("${env.testRailEnabled}" == 'true'){
+                                echo "${env.runId}"
+                                echo "${env.caseIds}"
+                                sh "cd codeceptjs-testrail && npm install"
+                                sh "cd .."
+                                sh("export TEST=${env.component} && export NODE_ENV=${env.env} && npx codeceptjs run-multiple --all -c testrail.conf.js --profile '${env.runId}' --grep '${env.caseIds}'")
+                            }
+                            if("${env.testRailEnabled}" == 'false'){
+                                sh("export TEST=${env.component} && export NODE_ENV=${env.env} && npx codeceptjs run-multiple --all --profile '${testSuite.name}'")
+                            }
+                        }
+
+                    }
+
+                    parallel testMap
+
+                }
+            }
+
+            post{
+                always{
+                    sh 'npx allure generate allure-results --clean -o allure-report'
+                    publishHTML([reportName  : 'Allure Report', reportDir: 'allure-report', reportFiles: 'index.html',
+                                 reportTitles: '', allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true])
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            emailext subject: "${env.JOB_NAME} ${env.env} ${env.component} build ${currentBuild.currentResult} ",
+                    body: "Details please refer to ${env.BUILD_URL}",
+                    attachLog: true,
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider', $class: 'CulpritsRecipientProvider']],
+                    to: "cherrie.gong@ehealth.com;rachel.wu@ehealth.com;carol.xu@ehealth.com;vivian.liu@ehealth.com;maria.melnyk@ehealth.com;willis.bao@ehealth.com;Sagarika.Annapragada@ehealth.com;Savita.Mandlekar@ehealth.com"
+        }
+    }
+}

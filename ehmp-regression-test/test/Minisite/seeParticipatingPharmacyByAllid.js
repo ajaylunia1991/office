@@ -1,0 +1,1 @@
+// http://sjprsystst01:8080/qafuntest/cases/Real_Browser/Medicare%20Product%20Line/minisite%20and%20landing%20page/preferred%20pharmacy%20pop%20up-list%20on%20top/log.txt

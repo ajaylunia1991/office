@@ -1,0 +1,62 @@
+{
+  "_from": "codeceptjs-testrail",
+  "_id": "codeceptjs-testrail@1.1.8",
+  "_inBundle": false,
+  "_integrity": "sha512-w4GndlQCXyzO8/nxFesmLQSex2ACrXwYhsiv+RxvYUXLX+PetuTk0ckK+SBXsKIyX5MYFxdOYBsqVltoZBMVuw==",
+  "_location": "/codeceptjs-testrail",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "codeceptjs-testrail",
+    "name": "codeceptjs-testrail",
+    "escapedName": "codeceptjs-testrail",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/codeceptjs-testrail/-/codeceptjs-testrail-1.1.8.tgz",
+  "_shasum": "ba32a5c08b09a5ba05b2c38038f4d0c13ce351f1",
+  "_spec": "codeceptjs-testrail",
+  "_where": "c:\\Git\\push-ehmp\\ehmp-regression-test",
+  "author": {
+    "name": "Thanh Nguyen",
+    "email": "peter.nguyentr@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/PeterNgTr/codeceptjs-testrail/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "sprintf-js": "^1.1.1",
+    "testrail-api": "^1.3.5"
+  },
+  "deprecated": false,
+  "description": "CodeceptJS plugin for TestRail",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0"
+  },
+  "homepage": "https://github.com/PeterNgTr/codeceptjs-testrail#readme",
+  "keywords": [
+    "codeceptJS",
+    "codeceptjs",
+    "testrail",
+    "testrail-plugin"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "codeceptjs-testrail",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PeterNgTr/codeceptjs-testrail.git"
+  },
+  "scripts": {
+    "lint": "eslint . --fix"
+  },
+  "version": "1.1.8"
+}
